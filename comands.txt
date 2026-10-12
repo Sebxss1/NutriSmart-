@@ -1,0 +1,17 @@
+# Crear el entorno virtual
+py -m venv .venv
+
+# Activarlo
+.\.venv\Scripts\Activate.ps1
+
+# Instalar FastAPI y Uvicorn | Solo una vez 
+python -m pip install fastapi "uvicorn[standard]"
+
+
+# Instalar requerimientos
+python -m pip install -r requirements.txt
+
+
+# Ejecutar la aplicación
+uvicorn main:app --reload 
+
