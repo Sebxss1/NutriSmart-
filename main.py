@@ -36,6 +36,17 @@ from controllers.rol_controller import router as rol_router
 from controllers.auth_controller import router as auth_router
 from controllers.condicion_controller import router as condicion_router
 from controllers.restriccion_controller import router as restriccion_router
+from controllers.receta_controller import router as receta_router
+from controllers.objetivo_controller import router as objetivo_router
+from controllers.plan_nutricional_controller import (
+    router as plan_nutricional_router,
+)
+from controllers.modulo_controller import router as modulo_router
+from controllers.detalle_plan_controller import router as detalle_plan_router
+from controllers.control_nutricional_controller import (
+    router as control_nutricional_router,
+)
+from controllers.cita_controller import router as cita_router
 
 
 
@@ -60,3 +71,10 @@ app.include_router(condicion_router)
 app.include_router(restriccion_router)
 app.include_router(alimento_router)
 app.include_router(alimento_region_router)
+app.include_router(receta_router)
+app.include_router(objetivo_router)
+app.include_router(plan_nutricional_router)
+app.include_router(modulo_router)
+app.include_router(detalle_plan_router)
+app.include_router(control_nutricional_router)
+app.include_router(cita_router)
