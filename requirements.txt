@@ -7,3 +7,5 @@ pydantic-settings==2.9.1
 passlib[bcrypt]
 python-jose[cryptography]
 email-validator
+python-multipart
+bcrypt==4.0.1
