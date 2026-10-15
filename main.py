@@ -47,6 +47,9 @@ from controllers.control_nutricional_controller import (
     router as control_nutricional_router,
 )
 from controllers.cita_controller import router as cita_router
+from controllers.consentimiento_controller import (
+    router as consentimiento_router,
+)
 
 
 
@@ -78,3 +81,4 @@ app.include_router(modulo_router)
 app.include_router(detalle_plan_router)
 app.include_router(control_nutricional_router)
 app.include_router(cita_router)
+app.include_router(consentimiento_router)

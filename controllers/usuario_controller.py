@@ -1,52 +1,48 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Header, status
 from sqlalchemy.orm import Session
 
 from config.database import get_db
 from models.usuario_model import Usuario
-from schemas.paciente_schema import PacienteCrear, PacienteRespuesta
-from services.paciente_service import PacienteService
+from schemas.usuario_schema import UsuarioCrear, UsuarioRespuesta
+from services.usuario_service import UsuarioService
 from utils.auth_dependencies import get_current_user
 
+
 router = APIRouter(
-    prefix="/pacientes",
-    tags=["Pacientes"],
+    prefix="/usuarios",
+    tags=["Usuarios"],
 )
 
 
 @router.post(
-    "/",
-    response_model=PacienteRespuesta,
+    "/bootstrap-admin",
+    response_model=UsuarioRespuesta,
     status_code=status.HTTP_201_CREATED,
 )
-def crear_paciente(
-    datos: PacienteCrear,
+def crear_administrador_inicial(
+    datos: UsuarioCrear,
+    x_bootstrap_token: str = Header(..., alias="X-Bootstrap-Token"),
     db: Session = Depends(get_db),
-    usuario_actual: Usuario = Depends(get_current_user),
 ):
-    servicio = PacienteService(db)
-    return servicio.crear_paciente(datos, usuario_actual)
+    servicio = UsuarioService(db)
+    return servicio.crear_administrador_inicial(
+        datos,
+        x_bootstrap_token,
+    )
 
 
-@router.get(
-    "/",
-    response_model=list[PacienteRespuesta],
+@router.post(
+    "/nutricionistas",
+    response_model=UsuarioRespuesta,
+    status_code=status.HTTP_201_CREATED,
 )
-def listar_pacientes(
+def crear_nutricionista(
+    datos: UsuarioCrear,
     db: Session = Depends(get_db),
     usuario_actual: Usuario = Depends(get_current_user),
 ):
-    servicio = PacienteService(db)
-    return servicio.listar_pacientes(usuario_actual)
-
-
-@router.get(
-    "/{paciente_id}",
-    response_model=PacienteRespuesta,
-)
-def obtener_paciente(
-    paciente_id: int,
-    db: Session = Depends(get_db),
-    usuario_actual: Usuario = Depends(get_current_user),
-):
-    servicio = PacienteService(db)
-    return servicio.obtener_paciente(paciente_id, usuario_actual)
+    servicio = UsuarioService(db)
+    return servicio.crear_nutricionista(
+        datos,
+        usuario_actual,
+    )

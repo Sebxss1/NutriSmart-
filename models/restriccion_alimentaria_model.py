@@ -5,10 +5,12 @@ from sqlalchemy import (
     CheckConstraint,
     DateTime,
     ForeignKey,
+    Index,
     Integer,
     String,
     Text,
     func,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -22,6 +24,14 @@ class RestriccionAlimentaria(Base):
         CheckConstraint(
             "tipo IN ('DURA', 'PREFERENCIA')",
             name="ck_restriccion_alimentaria_tipo",
+        ),
+        Index(
+            "uq_restriccion_paciente_nombre_tipo_activa",
+            "paciente_id",
+            "nombre",
+            "tipo",
+            unique=True,
+            postgresql_where=text("estado IS TRUE"),
         ),
     )
 
