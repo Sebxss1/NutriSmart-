@@ -38,3 +38,20 @@ class AlimentoRespuesta(BaseModel):
     sodio_mg: Decimal | None
     fuente_dato: str | None
     estado: bool
+
+
+class AlimentoActualizar(BaseModel):
+    nombre: str | None = Field(default=None, min_length=1, max_length=160)
+    categoria: str | None = Field(default=None, min_length=1, max_length=80)
+    unidad_base: str | None = Field(default=None, max_length=30)
+    energia_kcal: Decimal | None = Field(default=None, ge=0)
+    proteina_g: Decimal | None = Field(default=None, ge=0)
+    carbohidratos_g: Decimal | None = Field(default=None, ge=0)
+    grasa_g: Decimal | None = Field(default=None, ge=0)
+    fibra_g: Decimal | None = Field(default=None, ge=0)
+    sodio_mg: Decimal | None = Field(default=None, ge=0)
+    fuente_dato: str | None = Field(default=None, max_length=200)
+
+
+class AlimentoEstadoActualizar(BaseModel):
+    estado: bool

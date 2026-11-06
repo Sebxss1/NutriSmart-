@@ -6,6 +6,7 @@ from models.modulo_model import Modulo
 from models.usuario_model import Usuario
 from repositories.modulo_repository import ModuloRepository
 from schemas.modulo_schema import ModuloCrear
+from utils.roles import es_rol_administrador
 
 
 class ModuloService:
@@ -16,7 +17,7 @@ class ModuloService:
     def _es_administrador(usuario: Usuario) -> bool:
         return (
             usuario.rol is not None
-            and usuario.rol.nombre.lower() == "administrador"
+            and es_rol_administrador(usuario.rol.nombre)
         )
 
     def _exigir_administrador(self, usuario: Usuario):
@@ -109,3 +110,6 @@ class ModuloService:
             rol_id,
             ids_solicitados,
         )
+        
+    def listar_modulos_del_usuario(self, usuario_actual: Usuario):
+        return self.repository.listar_modulos_por_rol(usuario_actual.rol_id)

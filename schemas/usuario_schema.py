@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -15,3 +17,18 @@ class UsuarioRespuesta(BaseModel):
     correo: str
     rol_id: int
     estado: bool
+    creado: datetime | None = None
+
+
+class UsuarioEstadoActualizar(BaseModel):
+    estado: bool
+
+
+class UsuarioAdminRespuesta(BaseModel):
+    id: int
+    nombre: str
+    correo: str
+    rol_id: int
+    rol: str
+    estado: bool
+    creado: datetime

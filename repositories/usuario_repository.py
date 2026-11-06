@@ -65,3 +65,26 @@ class UsuarioRepository:
         except Exception:
             self.db.rollback()
             raise
+
+    def listar_usuarios(self) -> list[Usuario]:
+        return list(self.db.scalars(select(Usuario).order_by(Usuario.nombre)).all())
+
+    def obtener_por_id(self, usuario_id: int) -> Usuario | None:
+        return self.db.get(Usuario, usuario_id)
+
+    def contar_administradores_activos(self) -> int:
+        consulta = select(func.count(Usuario.id)).join(Rol).where(
+            func.lower(Rol.nombre) == "administrador",
+            Rol.estado.is_(True),
+            Usuario.estado.is_(True),
+        )
+        return int(self.db.scalar(consulta) or 0)
+
+    def guardar(self, usuario: Usuario) -> Usuario:
+        try:
+            self.db.commit()
+            self.db.refresh(usuario)
+            return usuario
+        except Exception:
+            self.db.rollback()
+            raise

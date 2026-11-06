@@ -53,6 +53,20 @@ class Paciente(Base):
 
     nombres: Mapped[str] = mapped_column(String(100), nullable=False)
     apellidos: Mapped[str] = mapped_column(String(100), nullable=False)
+    tipo_documento: Mapped[str | None] = mapped_column(String(100))
+    documento: Mapped[str | None] = mapped_column(
+        String(30),
+        unique=True,
+        index=True,
+        nullable=True,
+    )
+    telefono: Mapped[str | None] = mapped_column(String(30))
+    departamento: Mapped[str | None] = mapped_column(
+        String(100),
+        default="Atlántico",
+        server_default="Atlántico",
+    )
+    ciudad: Mapped[str | None] = mapped_column(String(100))
     fecha_nacimiento: Mapped[date] = mapped_column(Date, nullable=False)
     sexo: Mapped[str | None] = mapped_column(String(20))
     municipio_divipola: Mapped[str] = mapped_column(CHAR(5), nullable=False)

@@ -51,6 +51,8 @@ from controllers.consentimiento_controller import (
     router as consentimiento_router,
 )
 
+from fastapi.middleware.cors import CORSMiddleware
+
 
 
 @asynccontextmanager
@@ -64,6 +66,14 @@ app = FastAPI(
     description="API principal de Nutri con PostgreSQL.",
     version="1.0.0",
     lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(rol_router)

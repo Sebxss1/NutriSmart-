@@ -54,6 +54,10 @@ class PacienteRepository:
         )
         return self.db.scalar(consulta)
 
+    def buscar_por_usuario(self, usuario_id: int) -> Paciente | None:
+        consulta = select(Paciente).where(Paciente.usuario_id == usuario_id)
+        return self.db.scalar(consulta)
+
     def guardar_cambios(self, paciente: Paciente) -> Paciente:
         try:
             self.db.commit()
@@ -62,3 +66,9 @@ class PacienteRepository:
         except Exception:
             self.db.rollback()
             raise
+    
+    def buscar_por_documento(self, documento: str) -> Paciente | None:
+        consulta = select(Paciente).where(
+            Paciente.documento == documento.strip()
+        )
+        return self.db.scalar(consulta)

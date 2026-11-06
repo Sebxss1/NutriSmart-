@@ -69,3 +69,13 @@ def actualizar_modulos_del_rol(
         datos.modulo_ids,
         usuario_actual,
     )
+    
+@router.get(
+    "/modulos/mios",
+    response_model=list[ModuloRespuesta],
+)
+def listar_mis_modulos(
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(get_current_user),
+):
+    return ModuloService(db).listar_modulos_del_usuario(usuario_actual)

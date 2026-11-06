@@ -8,6 +8,11 @@ from pydantic import BaseModel, ConfigDict, Field
 class PacienteCrear(BaseModel):
     nombres: str = Field(min_length=1, max_length=100)
     apellidos: str = Field(min_length=1, max_length=100)
+    tipo_documento: str | None = Field(default=None, max_length=100)
+    documento: str = Field(min_length=1, max_length=30)
+    telefono: str | None = Field(default=None, max_length=30)
+    departamento: Literal["Atlántico"] = "Atlántico"
+    ciudad: str = Field(min_length=1, max_length=100)
     fecha_nacimiento: date
     sexo: str | None = Field(default=None, max_length=20)
     municipio_divipola: str = Field(pattern=r"^\d{5}$")
@@ -22,6 +27,11 @@ class PacienteCrear(BaseModel):
 class PacienteActualizar(BaseModel):
     nombres: str | None = Field(default=None, min_length=1, max_length=100)
     apellidos: str | None = Field(default=None, min_length=1, max_length=100)
+    tipo_documento: str | None = Field(default=None, max_length=100)
+    documento: str | None = Field(default=None, min_length=1, max_length=30)
+    telefono: str | None = Field(default=None, max_length=30)
+    departamento: Literal["Atlántico"] | None = None
+    ciudad: str | None = Field(default=None, min_length=1, max_length=100)
     fecha_nacimiento: date | None = None
     sexo: str | None = Field(default=None, max_length=20)
     municipio_divipola: str | None = Field(
@@ -42,9 +52,14 @@ class PacienteRespuesta(BaseModel):
     usuario_id: int | None
     nombres: str
     apellidos: str
+    tipo_documento: str | None
+    documento: str | None
+    telefono: str | None
+    departamento: str | None
+    ciudad: str | None
     fecha_nacimiento: date
     sexo: str | None
-    municipio_divipola: str
+    municipio_divipola: str | None = None
     zona: str | None
     estrato: int | None
     presupuesto_semanal_cop: Decimal | None

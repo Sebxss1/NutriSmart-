@@ -14,6 +14,43 @@ from utils.auth_dependencies import get_current_user
 router = APIRouter(prefix="/pacientes", tags=["Pacientes"])
 
 
+@router.get(
+    "/",
+    response_model=list[PacienteRespuesta],
+)
+def listar_pacientes(
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(get_current_user),
+):
+    return PacienteService(db).listar_pacientes(usuario_actual)
+
+
+@router.get(
+    "/mi-perfil",
+    response_model=PacienteRespuesta,
+)
+def obtener_mi_perfil(
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(get_current_user),
+):
+    return PacienteService(db).obtener_perfil_propio(usuario_actual)
+
+
+@router.get(
+    "/{paciente_id}",
+    response_model=PacienteRespuesta,
+)
+def obtener_paciente(
+    paciente_id: int,
+    db: Session = Depends(get_db),
+    usuario_actual: Usuario = Depends(get_current_user),
+):
+    return PacienteService(db).obtener_paciente(
+        paciente_id,
+        usuario_actual,
+    )
+
+
 @router.post(
     "/",
     response_model=PacienteRespuesta,
@@ -24,8 +61,11 @@ def crear_paciente(
     db: Session = Depends(get_db),
     usuario_actual: Usuario = Depends(get_current_user),
 ):
-    servicio = PacienteService(db)
-    return servicio.crear_paciente(datos, usuario_actual)
+    return PacienteService(db).crear_paciente(
+        datos,
+        usuario_actual,
+    )
+
 
 @router.patch(
     "/{paciente_id}",
@@ -37,8 +77,7 @@ def actualizar_paciente(
     db: Session = Depends(get_db),
     usuario_actual: Usuario = Depends(get_current_user),
 ):
-    servicio = PacienteService(db)
-    return servicio.actualizar_paciente(
+    return PacienteService(db).actualizar_paciente(
         paciente_id,
         datos,
         usuario_actual,

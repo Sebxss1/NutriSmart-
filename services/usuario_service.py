@@ -8,6 +8,7 @@ from models.usuario_model import Usuario
 from repositories.usuario_repository import UsuarioRepository
 from schemas.usuario_schema import UsuarioCrear
 from utils.seguridad import hash_password
+from utils.roles import es_rol_administrador
 
 
 class UsuarioService:
@@ -59,7 +60,7 @@ class UsuarioService:
         datos: UsuarioCrear,
         usuario_actual: Usuario,
     ) -> Usuario:
-        if usuario_actual.rol.nombre.lower() != "administrador":
+        if not usuario_actual.rol or not es_rol_administrador(usuario_actual.rol.nombre):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Solo un administrador puede crear nutricionistas.",
@@ -90,3 +91,38 @@ class UsuarioService:
         )
 
         return self.repository.crear_usuario(usuario)
+
+    def listar_usuarios(self, usuario_actual: Usuario) -> list[dict]:
+        self._exigir_administrador(usuario_actual)
+        return [
+            {
+                "id": usuario.id,
+                "nombre": usuario.nombre,
+                "correo": usuario.correo,
+                "rol_id": usuario.rol_id,
+                "rol": usuario.rol.nombre if usuario.rol else "sin_rol",
+                "estado": usuario.estado,
+                "creado": usuario.creado,
+            }
+            for usuario in self.repository.listar_usuarios()
+        ]
+
+    def actualizar_estado(
+        self, usuario_id: int, estado: bool, usuario_actual: Usuario
+    ) -> Usuario:
+        self._exigir_administrador(usuario_actual)
+        usuario = self.repository.obtener_por_id(usuario_id)
+        if not usuario:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+        if usuario.id == usuario_actual.id and not estado:
+            raise HTTPException(status_code=400, detail="No puedes desactivar tu propia cuenta.")
+        es_admin = usuario.rol is not None and es_rol_administrador(usuario.rol.nombre)
+        if es_admin and usuario.estado and not estado and self.repository.contar_administradores_activos() <= 1:
+            raise HTTPException(status_code=409, detail="Debe permanecer al menos un administrador activo.")
+        usuario.estado = estado
+        return self.repository.guardar(usuario)
+
+    @staticmethod
+    def _exigir_administrador(usuario: Usuario) -> None:
+        if not usuario.rol or not es_rol_administrador(usuario.rol.nombre):
+            raise HTTPException(status_code=403, detail="Solo un administrador puede gestionar usuarios.")
